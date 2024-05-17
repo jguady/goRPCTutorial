@@ -1,0 +1,28 @@
+package service
+
+import (
+	// "context"
+	"github.com/jguady/goRPCTutorial/proto"
+)
+
+type TodoServiceImpl struct {
+	// type embedded to comply with Google lib
+	proto.UnimplementedTodoServiceServer
+}
+
+func NewTodoItemServiceImpl() {
+	return &TodoServiceImpl
+}
+
+// func (todoService *TodoServiceImpl) GetTodoItem(context.Context, *GetTodoItemsRequest) (*GetTodoItemsResponse, error) {
+
+// }
+// func (todoService *TodoServiceImpl) CreateTodoItem(context.Context, *CreateTodoItemRequest) (*CreateTodoItemResponse, error) {
+
+// }
+// func (todoService *TodoServiceImpl) UpdateTodoItem(context.Context, *UpdateTodoItemRequest) (*UpdateTodoItemResponse, error) {
+
+// }
+// func (todoService *TodoServiceImpl) DeleteTodoItem(context.Context, *DeleteTodoItemRequest) (*DeleteTodoItemResponse, error) {
+
+// }
