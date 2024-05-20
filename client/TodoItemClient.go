@@ -67,40 +67,62 @@ func main() {
 	client := proto.NewTodoServiceClient(conn)
 
 	createTodoItem(client)
-	// createTodoItem(client)
-	// createTodoItem(client)
+	createTodoItem(client)
+	createTodoItem(client)
 
 	listTodoItems(client)
-	// updateTodoItem(client)
+	item, _ := getTodoItem(client)
+	updateTodoItem(client, item)
 
-	// listTodoItems(client)
+	listTodoItems(client)
 
-	// deleteTodoItem(client)
-
-	// getTodoItem(client)
+	deleteTodoItem(client)
+	listTodoItems(client)
 
 }
 
-func getTodoItem(client proto.TodoServiceClient) {
+func getTodoItem(client proto.TodoServiceClient) (*proto.TodoItem, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	randid := rand.Int31()
-	item, err := client.GetTodoItem(ctx, &proto.GetTodoItemRequest{Id: randid})
+	item, err := client.GetTodoItem(ctx, &proto.GetTodoItemRequest{Id: 1})
 	if err != nil {
-		log.Fatalf("I've died getting item %d", randid)
-	} else {
-		fmt.Printf("I'm a Todo Item \n %#v", item)
+		log.Fatalf("I've died getting item %d", 1)
+		return nil, err
 	}
+	fmt.Printf("I GOT a Todo Item %v\n", item)
+	return item, nil
 }
 
 func deleteTodoItem(client proto.TodoServiceClient) {
-	panic("unimplemented")
-	// ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	// defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	itemToDelete, _ := client.GetTodoItem(ctx, &proto.GetTodoItemRequest{Id: 3})
+	client.DeleteTodoItem(ctx, &proto.DeleteTodoItemRequest{Item: itemToDelete})
+
 }
 
-func updateTodoItem(client proto.TodoServiceClient) {
-	panic("unimplemented")
+func updateTodoItem(client proto.TodoServiceClient, updateItem *proto.TodoItem) {
+
+	//Setup Context
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	//Modify Item
+	updatedItem := *updateItem
+	updatedItem.Name = fmt.Sprintf("I have you now TK-%d", rand.Int31())
+	newItem, err := client.UpdateTodoItem(ctx, &proto.UpdateTodoItemRequest{Id: updatedItem.Id, Item: &updatedItem})
+	if err != nil {
+		log.Fatalf("I've died Updating an item %d", updateItem.Id)
+	}
+	fmt.Printf("I Updated this item %v\n to this item %v\n", updateItem.Name, newItem.Name)
+
+	// item, err := client.GetTodoItem(ctx, &proto.GetTodoItemRequest{Id: 1})
+	// if err != nil {
+	// 	log.Fatalf("I've died getting item %d", 1)
+	// 	return nil, err
+	// }
+	// fmt.Printf("I GOT a Todo Item %v\n", item)
+	// return item, nil
 }
 
 func listTodoItems(client proto.TodoServiceClient) {
@@ -119,7 +141,7 @@ func listTodoItems(client proto.TodoServiceClient) {
 		if err != nil {
 			log.Fatal("I died listing items two")
 		}
-		fmt.Printf("I'm a Todo Item \n %#v", todoItem)
+		fmt.Printf("I'm a Todo Item %v\n", todoItem)
 	}
 }
 
@@ -133,5 +155,5 @@ func createTodoItem(client proto.TodoServiceClient) {
 	if err != nil {
 		log.Fatalf("I died creating items, %v", err)
 	}
-	fmt.Printf("Item to Create %v", &item)
+	fmt.Printf("Item to Create %v\n", &item)
 }

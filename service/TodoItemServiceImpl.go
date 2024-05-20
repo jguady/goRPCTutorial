@@ -26,7 +26,9 @@ func NewTodoItemServiceImpl() *TodoServiceServer {
 }
 
 func (todoService *TodoServiceServer) ListTodoItems(listFilter *proto.ListTodoItemFilterRequest, stream proto.TodoService_ListTodoItemsServer) error {
+	fmt.Println("Listing TodoItems")
 	for _, todoItem := range todoService.data {
+		fmt.Printf("TodoItem: %v\n", todoItem)
 		if err := stream.Send(todoItem); err != nil {
 			return err
 		}
@@ -78,6 +80,7 @@ func (todoService *TodoServiceServer) UpdateTodoItem(ctx context.Context, update
 func (todoService *TodoServiceServer) DeleteTodoItem(ctx context.Context, deleteRequest *proto.DeleteTodoItemRequest) (*proto.DeleteTodoItemResponse, error) {
 	//This needs to be corrected
 	delete(todoService.data, deleteRequest.Item.Id)
+	panic("TestError")
 	return &proto.DeleteTodoItemResponse{}, nil
 }
 
