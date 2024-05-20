@@ -5,8 +5,6 @@ option java_outer_classname = "Ponycopter";
 option java_multiple_files = true;
 option go_package = "proto/";
 
-package grpc;
-
 message TodoItem {
     int32 id = 1;
     string name = 2;
@@ -14,12 +12,17 @@ message TodoItem {
     optional int32 days_left = 4;
 }
 
-message GetTodoItemsRequest {
-    repeated int32 ids = 1 ; 
+message ListTodoItemFilterRequest {
+    optional string filter = 1;
 }
 
-message GetTodoItemsResponse {
-    repeated TodoItem item = 1;
+
+message GetTodoItemRequest {
+    int32 id = 1 ; 
+}
+
+message GetTodoItemResponse {
+    TodoItem item = 1;
 
 }
 
@@ -31,7 +34,8 @@ message CreateTodoItemRequest {
 
 
 message UpdateTodoItemRequest {
-    TodoItem item = 1;
+    int32 id = 1;
+    TodoItem item = 2;
 }
 
 message DeleteTodoItemRequest {
@@ -43,8 +47,8 @@ message DeleteTodoItemResponse {
 }
 
 service TodoService {
-
-    rpc GetTodoItem(GetTodoItemsRequest) returns (GetTodoItemsResponse) {}
+    rpc ListTodoItems(ListTodoItemFilterRequest) returns (stream TodoItem) {}
+    rpc GetTodoItem(GetTodoItemRequest) returns (TodoItem) {}
     rpc CreateTodoItem(CreateTodoItemRequest) returns (TodoItem) {}
     rpc UpdateTodoItem(UpdateTodoItemRequest) returns (TodoItem) {}
     rpc DeleteTodoItem(DeleteTodoItemRequest) returns (DeleteTodoItemResponse) {}
