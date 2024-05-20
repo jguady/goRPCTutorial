@@ -80,7 +80,7 @@ func (todoService *TodoServiceServer) UpdateTodoItem(ctx context.Context, update
 func (todoService *TodoServiceServer) DeleteTodoItem(ctx context.Context, deleteRequest *proto.DeleteTodoItemRequest) (*proto.DeleteTodoItemResponse, error) {
 	//This needs to be corrected
 	delete(todoService.data, deleteRequest.Item.Id)
-	panic("TestError")
+	// panic("TestError")
 	return &proto.DeleteTodoItemResponse{}, nil
 }
 
